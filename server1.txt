@@ -1,0 +1,62 @@
+const express = require('express');
+const server = express();
+const mongoose = require("mongoose");
+const userRoutes = require ('./routes/user-routes');
+const bodyParser = require('body-parser');
+const productRoutes = require('./routes/product-routes');
+
+
+var dbURL = "mongodb+srv://admin01:AstroLabs_2023@cluster0.qipys9z.mongodb.net/?retryWrites=true&w=majority"
+
+const connectionConfig = {
+
+    'useNewUrlParser': true,
+    'useUnifiedTopology': true
+}
+
+mongoose
+
+// attempt connection to MongoDB
+.connect(dbURL, connectionConfig)
+// if connection is successful :
+.then(
+    function() {
+        console.log('DB is connected');
+    }
+)
+// if a problem occurs...
+.catch(
+    function(dbError){
+        console.log('dbError', dbError);
+    }
+);
+
+
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
+
+server.get(
+    // route
+    '/index',
+
+    // callback
+    function(req, res) {
+        res.send("<!DOCTYPE html><html><head></head><body><h1>Welcome Home!</h1></body></html>")
+    }
+);
+
+server.use(
+    '/user-routers',
+    userRoutes
+);
+server.use(
+    '/products',
+    productRoutes
+)
+
+server.listen(
+    3002,
+    function() {
+        console.log('server is running at http://localhost:3000')
+    }
+);
